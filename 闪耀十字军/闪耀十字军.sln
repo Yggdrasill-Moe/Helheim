@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.30110.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ZlibPRO", "ZlibPRO\ZlibPRO.vcxproj", "{AB0A2070-2A3A-4BAA-B400-4DA686126666}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "文本解包", "文本解包\文本解包.vcxproj", "{26A5FA71-0865-403E-BAAB-88CC2288653C}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "文本导出", "文本导出\文本导出.vcxproj", "{E354FB5F-2547-45DE-90A2-4EFF1956FB7F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{AB0A2070-2A3A-4BAA-B400-4DA686126666}.Debug|Win32.ActiveCfg = Debug|Win32
+		{AB0A2070-2A3A-4BAA-B400-4DA686126666}.Debug|Win32.Build.0 = Debug|Win32
+		{AB0A2070-2A3A-4BAA-B400-4DA686126666}.Release|Win32.ActiveCfg = Release|Win32
+		{AB0A2070-2A3A-4BAA-B400-4DA686126666}.Release|Win32.Build.0 = Release|Win32
+		{26A5FA71-0865-403E-BAAB-88CC2288653C}.Debug|Win32.ActiveCfg = Debug|Win32
+		{26A5FA71-0865-403E-BAAB-88CC2288653C}.Debug|Win32.Build.0 = Debug|Win32
+		{26A5FA71-0865-403E-BAAB-88CC2288653C}.Release|Win32.ActiveCfg = Release|Win32
+		{26A5FA71-0865-403E-BAAB-88CC2288653C}.Release|Win32.Build.0 = Release|Win32
+		{E354FB5F-2547-45DE-90A2-4EFF1956FB7F}.Debug|Win32.ActiveCfg = Debug|Win32
+		{E354FB5F-2547-45DE-90A2-4EFF1956FB7F}.Debug|Win32.Build.0 = Debug|Win32
+		{E354FB5F-2547-45DE-90A2-4EFF1956FB7F}.Release|Win32.ActiveCfg = Release|Win32
+		{E354FB5F-2547-45DE-90A2-4EFF1956FB7F}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
