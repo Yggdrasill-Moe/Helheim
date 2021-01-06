@@ -1,0 +1,10 @@
+do
+	savepos now
+	get info long
+	math now + 0x8
+	goto now
+	
+	putbits info 32
+	goto now
+
+while now <= 0xde30

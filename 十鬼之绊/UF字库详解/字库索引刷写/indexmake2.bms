@@ -1,0 +1,18 @@
+endian little
+set i 0
+savepos now
+
+for i <= 3
+	math now + 0x2
+	goto now
+	get size short
+	get offset long
+	
+	math now + 0xA
+	goto now
+	math offset + size
+	putbits offset 32
+	math now - 0x4
+	goto now	
+next i
+	
