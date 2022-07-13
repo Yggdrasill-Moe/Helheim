@@ -247,7 +247,7 @@ void WriteFile(unit32 FileNum, char *dname)
 
 int main(int argc, char *argv[])
 {
-	printf("project：Helheim-DATE A LIVE 凛绪Reincarnation ver0.7\n用于转换.tex文件，将tex文件放进文件夹下后拖动文件夹到程序上，\n文件夹中不得有其他文件夹\nby Darkness-TX 2016.3.3\nEmail：1545492547@qq.com\n");
+	printf("project：Helheim-DATE A LIVE 凛绪Reincarnation ver0.7\n用于转换.tex文件，将tex文件放进文件夹下后拖动文件夹到程序上，\n文件夹中不得有其他文件夹\nby Darkness-TX 2016.3.3\n");
 	process_dir(argv[1]);
 	WriteFile(FileNum, argv[1]);
 	printf("已完成，总文件数%d\n", FileNum);

@@ -1,3 +1,8 @@
+/*
+用于解包pck文件
+made by Darkness-TX
+2022.07.05
+*/
 #define _CRT_SECURE_NO_WARNINGS
 #include <stdio.h>
 #include <string.h>
@@ -9,20 +14,27 @@
 typedef unsigned char  unit8;
 typedef unsigned short unit16;
 typedef unsigned int   unit32;
+typedef unsigned __int64 unit64;
 
 unit32 PackNum = 0;//包文件数，初始计数为0
 
 struct FS
 {
-	unit8 signature[8];
+	unit8 signature[20];
 	unit32 Length;//索引长度
 }Fsignature;
 
 struct PS
 {
-	unit8 signature[8];
+	unit8 signature[20];
 	unit32 Length;//索引长度
 }Psignature;
+
+struct AS
+{
+	unit8 signature[20];
+	unit32 Length;//索引长度
+}Asignature;
 
 struct packindex
 {
@@ -31,7 +43,7 @@ struct packindex
 	unit32 FileOffset;//文件偏移
 }PackIndex[20000];
 
-int CreateDir(const char *sPathName)
+int CreateDir(const char* sPathName)
 {
 	char DirName[256];
 	strcpy(DirName, sPathName);
@@ -39,12 +51,12 @@ int CreateDir(const char *sPathName)
 	if (DirName[len - 1] != '/')
 		strcat(DirName, "/");
 	len = strlen(DirName);
-	for (i = 1; i<len; i++)
+	for (i = 1; i < len; i++)
 	{
 		if (DirName[i] == '/')
 		{
 			DirName[i] = 0;
-			if (_access(DirName, NULL) != 0)
+			if (_access(DirName, 0) != 0)
 			{
 				if (_mkdir(DirName) == -1)
 				{
@@ -58,13 +70,13 @@ int CreateDir(const char *sPathName)
 	return   0;
 }
 
-void ReadIndex(char *FileName)
+void ReadIndex(char* FileName)
 {
 	unit32 i = 0, s = 0, namestart, namenext, saveoff = 0;
-	FILE *fp;
+	FILE* fp;
 	fopen_s(&fp, FileName, "rb");
-	fread(Fsignature.signature, 8, 1, fp);
-	if (strcmp("Filename", Fsignature.signature) != 0)//"Filename"为文件名索引标示
+	fread(Fsignature.signature, 20, 1, fp);
+	if (strncmp("Filename", Fsignature.signature, 8) != 0)//"Filename"为文件名索引标示
 	{
 		printf("不支持的文件类型，请检查文件头标示是否为FileName\n");
 		system("pause");
@@ -73,31 +85,31 @@ void ReadIndex(char *FileName)
 	else
 	{
 		fread(&Fsignature.Length, 4, 1, fp);
-		Fsignature.Length = Fsignature.Length - sizeof(Fsignature.Length) - sizeof(Fsignature.signature) + 3 & ~3;
+		Fsignature.Length = Fsignature.Length - sizeof(Fsignature.Length) - sizeof(Fsignature.signature) + 7 & ~7;
 		fseek(fp, Fsignature.Length, SEEK_CUR);
-		fread(Psignature.signature, 8, 1, fp);
-		if (strncmp("Pack    ", Psignature.signature, 8) != 0)//"Pack    "为包索引标示
+		fread(Psignature.signature, 20, 1, fp);
+		if (strncmp("Pack", Psignature.signature, 4) != 0)//"Pack"为包索引标示
 		{
-			printf("不支持的文件类型，请检查包标示是否为Pack    \n");
+			printf("不支持的文件类型，请检查包标示是否为Pack\n");
 			system("pause");
 			exit(0);
 		}
 		else
 		{
 			fread(&Psignature.Length, 4, 1, fp);
-			Psignature.Length = Psignature.Length - sizeof(Psignature.Length) - sizeof(Fsignature.signature) + 3 & ~3;
+			Psignature.Length = Psignature.Length - sizeof(Psignature.Length) - sizeof(Psignature.signature) + 7 & ~7;
 			fread(&PackNum, 4, 1, fp);
 			for (s = 0; s < PackNum; s++)
 			{
 				fread(&PackIndex[s].FileOffset, 4, 1, fp);
 				fread(&PackIndex[s].FileSize, 4, 1, fp);
 			}
-			fseek(fp, 0xC, SEEK_SET);
+			fseek(fp, 0x18, SEEK_SET);
 			fread(&namestart, 4, 1, fp);
 			for (s = 0; s < PackNum; s++)
 			{
 				fread(&namenext, 4, 1, fp);
-				fseek(fp, 0xC + PackNum * 4 + saveoff, SEEK_SET);
+				fseek(fp, 0x18 + PackNum * 4 + saveoff, SEEK_SET);
 				if (s != PackNum - 1)
 				{
 					fread(PackIndex[s].FileName, 1, namenext - namestart, fp);
@@ -106,18 +118,18 @@ void ReadIndex(char *FileName)
 				}
 				else
 					fread(PackIndex[s].FileName, 1, Fsignature.Length - namestart, fp);
-				fseek(fp, 0xC + s * 4 + 8, SEEK_SET);
+				fseek(fp, 0x18 + s * 4 + 8, SEEK_SET);
 			}
 		}
 	}
 	fclose(fp);
 }
 
-void WriteFile(char *FileName)
+void WriteFile(char* FileName)
 {
-	unit8 *data, dir[260], buff[400], path[100], *decdata, zlib[4];
+	unit8* data, dir[260], buff[400], path[100], * decdata, zlib[4];
 	unit32 i, s, namesize, fsize, dsize;
-	FILE *OpenFile, *WriteFile;
+	FILE* OpenFile, * WriteFile;
 	fopen_s(&OpenFile, FileName, "rb");
 	sprintf(dir, "%s_unpack", FileName);
 	_mkdir(dir);
@@ -126,7 +138,7 @@ void WriteFile(char *FileName)
 	for (s = 0; s < PackNum; s++)
 	{
 		namesize = strlen(PackIndex[s].FileName);
-		char *p;
+		char* p;
 		p = strrchr(PackIndex[s].FileName, '/');
 		if (p == NULL)
 		{
@@ -172,7 +184,7 @@ void WriteFile(char *FileName)
 			CreateDir(path);
 			_chdir(buff);
 			namesize = strlen(PackIndex[s].FileName);
-			for (i = namesize; i >0; i--)
+			for (i = namesize; i > 0; i--)
 			{
 				PackIndex[s].FileName[i + 1] = PackIndex[s].FileName[i - 1];
 			}
@@ -211,9 +223,9 @@ void WriteFile(char *FileName)
 	fclose(OpenFile);
 }
 
-int main(int argc, char *argv[])
+int main(int argc, char* argv[])
 {
-	printf("project：Helheim-DATE A LIVE 凛绪Reincarnation ver1.1\n用于解包.pck文件，将.pck文件拖到程序上\nby Darkness-TX 2016.3.2\n");
+	printf("project：Helheim-DATE A LIVE 莲Dystopia\n用于解包pck文件，将pck文件拖到程序上\nby Darkness-TX 2022.07.05\n\n");
 	ReadIndex(argv[1]);
 	WriteFile(argv[1]);
 	printf("已完成，总文件数%d\n", PackNum);
