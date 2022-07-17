@@ -242,8 +242,8 @@ void Unpack(char *dname)
 				fread(&Frame, sizeof(frame_t), 1, src);
 				fprintf(ini, "unk1_%d=0x%X\n;\tunk1_%d=%f\nunk2_%d=0x%X\n;\tunk2_%d=%f\n", j, Frame.unk1, j, *((float*)&Frame.unk1), j, Frame.unk2, j, *((float*)&Frame.unk2));
 				fprintf(ini, "frameWidth_%d=0x%X\n;\tframeWidth_%d=%f\nframeHeight_%d=0x%X\n;\tframeHeight_%d=%f\n", j, Frame.frameWidth, j, *((float*)&Frame.frameWidth), j, Frame.frameHeight, j, *((float*)&Frame.frameHeight));
-				fprintf(ini, "frameXScale_%d=0x%X\n;\tframeXScale_%d=%f\nframeYScale_%d=0x%X\n;\tframeYScale_%d=%f\n", j, Frame.frameXScale, j, *((float*)&Frame.frameXScale), j, Frame.frameYScale, j, *((float*)&Frame.frameYScale));
-				fprintf(ini, "frameWidthScale_%d=0x%X\n;\tframeWidthScale_%d=%f\nframeHeightScale_%d=0x%X\n;\tframeHeightScale_%d=%f\n\n", j, Frame.frameWidthScale, j, *((float*)&Frame.frameWidthScale), j, Frame.frameHeightScale, j, *((float*)&Frame.frameHeightScale));
+				fprintf(ini, "frameXScale_%d=0x%X\n;\tframeXScale_%d=%f|start:%f\nframeYScale_%d=0x%X\n;\tframeYScale_%d=%f|start:%f\n", j, Frame.frameXScale, j, *((float*)&Frame.frameXScale), *((float*)&Frame.frameXScale) * Texture.width, j, Frame.frameYScale, j, *((float*)&Frame.frameYScale), *((float*)&Frame.frameYScale) * Texture.height);
+				fprintf(ini, "frameWidthScale_%d=0x%X\n;\tframeWidthScale_%d=%f|start:%f\nframeHeightScale_%d=0x%X\n;\tframeHeightScale_%d=%f|start:%f\n\n", j, Frame.frameWidthScale, j, *((float*)&Frame.frameWidthScale), *((float*)&Frame.frameWidthScale) * Texture.width, j, Frame.frameHeightScale, j, *((float*)&Frame.frameHeightScale), *((float*)&Frame.frameHeightScale) * Texture.height);
 			}
 			fseek(src, ftell(src) + 7 & ~7, SEEK_SET);
 			anime_t Anime;

@@ -240,7 +240,7 @@ void Pack(char* dname)
 {
 	unit8 *data = NULL, namebuff[MAX_PATH], zero = '\0', buff[20];
 	FILE *src = NULL, *dst = NULL, *pngfile = NULL;
-	unit32 i = 0, j = 0;
+	unit32 i = 0, j = 0, block_length = 0;
 	_chdir(dname);
 	for (i = 0; i < FileNum; i++)
 	{
@@ -260,6 +260,7 @@ void Pack(char* dname)
 		}
 		else
 			fread(&Texture.block_length, 4, 1, src);
+		block_length = Texture.block_length;
 		fread(&Texture.flag, 8, 1, src);
 		fread(&Texture.pic_length, 4, 1, src);
 		fread(&Texture.width, 2, 1, src);
@@ -275,7 +276,7 @@ void Pack(char* dname)
 			Texture.height = height;
 			Texture.pic_length = width * height;
 			fclose(pngfile);
-			if (Texture.block_length != 0)
+			if (block_length != 0)
 				Texture.block_length = Texture.pic_length + sizeof(texture_t);
 		}
 		else if (Texture.flag == 0x0810000000004000)//32λrgba
@@ -289,7 +290,7 @@ void Pack(char* dname)
 			Texture.height = height;
 			Texture.pic_length = width * height * 4;
 			fclose(pngfile);
-			if (Texture.block_length != 0)
+			if (block_length != 0)
 				Texture.block_length = Texture.pic_length + sizeof(texture_t);
 		}
 		else if (Texture.flag == 0x0810000100004000)//png
@@ -307,7 +308,7 @@ void Pack(char* dname)
 			data = malloc(Texture.pic_length);
 			fread(data, Texture.pic_length, 1, pngfile);
 			fclose(pngfile);
-			if (Texture.block_length != 0)
+			if (block_length != 0)
 				Texture.block_length = Texture.pic_length + sizeof(texture_t);
 		}
 		else
@@ -319,7 +320,7 @@ void Pack(char* dname)
 		printf("%s size:0x%X width:%d height:%d\n", Index[i].FileName, Texture.pic_length, Texture.width, Texture.height);
 		sprintf(namebuff, "%s.new", Index[i].FileName);
 		dst = fopen(namebuff, "wb");
-		if (Texture.block_length == 0)
+		if (block_length == 0)
 		{
 			fwrite(&Texture.flag, 8, 1, dst);
 			fwrite(&Texture.pic_length, 4, 1, dst);
@@ -339,7 +340,7 @@ void Pack(char* dname)
 			fwrite(&Texture.height, 2, 1, dst);
 			fwrite(data, Texture.pic_length, 1, dst);
 			free(data);
-			fseek(src, Texture.block_length + 7 & ~7, SEEK_SET);
+			fseek(src, block_length + 7 & ~7, SEEK_SET);
 			parts_t Parts;
 			fread(Parts.magic, 20, 1, src);
 			if (strncmp(Parts.magic, "Parts   ", 8) != 0)
