@@ -1,0 +1,49 @@
+码表起始地址132b64
+133816：波浪号改5eff
+sjis utf16 utf8
+11432c：disc0:/DLC/
+分支路线图：sub_881EA50
+改編为篇
+95 d2改91 81
+95:1ba74
+d2:1bae8
+
+int __fastcall sub_881EA50(unsigned __int8 *a1, int a2)
+{
+  _BYTE *v2; // $a3
+  int v3; // $a2
+  _BYTE v6[256]; // [sp+0h] [-100h] BYREF
+
+  v2 = v6;
+  if ( a1 && a2 )
+  {
+    while ( 1 )
+    {
+      v3 = *a1;
+      if ( v3 == 0x81 )
+      {
+        if ( (unsigned __int8)(a1[1] - 0x79) >= 2u )
+          goto LABEL_5;
+        a1 += 2;
+      }
+      else if ( v3 == 0x95 && a1[1] == 0xD2 )
+      {
+        a1 += 2;
+      }
+      else
+      {
+LABEL_5:
+        ++a1;
+        *v2 = v3;
+        if ( v3 == 0x26 )
+        {
+          *v2++ = 0x81;
+          *v2 = 0x95;
+        }
+        if ( !*v2++ )
+          return strcmp(v6);
+      }
+    }
+  }
+  return -1;
+}
