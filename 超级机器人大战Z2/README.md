@@ -16,14 +16,28 @@ SRVC.BIN：战斗对话
 
 DATA000.BIN：开头文本
 
+DATA014.BIN：剧情简介相关
+
 DATA015.BIN：MAP-DATA信息
 
-EBOOT.BIN：系统文本，存档文本，没有配转码文件，所以存档文本直接存的UTF-8
+DATA020.BIN：人物文本
+
+DATA021.BIN：机体文本
+
+EBOOT.BIN：系统文本，存档文本，甚至有图片，没有配转码文件，所以存档文本直接存的UTF-8
 
 未找全
 #### [图片]
-大部分需要修图的都在Z2DATA.BIN，大部分图片是GIM封包，有些是自制格式，简单的图片数据+调色板数据组合
+大部分需要修图的都在Z2DATA.BIN、VEFF2DX.BIN、DATA013.BIN，大部分图片是GIM封包，有些是自制格式，简单的图片数据+调色板数据组合
+#### [压缩算法]
+LZ编码系列，有点意思，但是原版是有DP的，我自己没写带DP的，有空再完善吧
+#### [无限狱mod]
+需要解包mod的EVENTBIN.BIN，然后配合mod的EBOOT.BIN（命名为WBOOT.BIN）与基础汉化EBOOT.BIN（命名为BOOT.BIN）
 ## [New]
+ver 1.0
+
+全部完成，同时增加无限狱与BGM修改相关程序
+
 ver 0.7
 
 可解决Z2再世篇的大部分内容汉化

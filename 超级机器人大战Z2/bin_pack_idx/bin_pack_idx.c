@@ -50,7 +50,7 @@ unit32 process_dir(char* dname)
 void Pack(char* fname)
 {
 	FILE *src = NULL, *dst = NULL, *info = NULL;
-	unit32 i = 0, j = 0, count = 0;
+	unit32 i = 0, j = 0;
 	unit8 dstname[MAX_PATH], *data = NULL;
 	sprintf(dstname, "%s.new", fname);
 	dst = fopen(dstname, "wb");

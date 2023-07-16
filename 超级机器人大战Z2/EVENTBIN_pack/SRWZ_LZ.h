@@ -603,7 +603,8 @@ unit32 LZcompress(unit8* cdata, unit8* udata, unit32 size)
 			{
 				addr = 0;
 				count = 0;
-				while ((*(window + addr) == *(src + addr)) && ((unit32)(src + addr - udata) < size))
+				//要先判断是否超过范围，再判断是否匹配，这个小细节之前被忽略了，步骤反了过来导致先越界取值(*(src + addr))程序直接崩溃了
+				while (((unit32)(src + addr - udata) < size) && (*(window + addr) == *(src + addr)))
 				{
 					count++;
 					addr++;
@@ -615,6 +616,9 @@ unit32 LZcompress(unit8* cdata, unit8* udata, unit32 size)
 					max_match = count;
 					distance = src - window;
 				}
+				//如果这轮匹配后正好处理完所有原始数据，就没必要再继续前向匹配了，算是一个简单的优化
+				if ((unit32)(src + max_match - udata) == size)
+					break;
 				window--;
 			}
 		}

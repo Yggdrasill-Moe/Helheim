@@ -62,7 +62,7 @@ void tilec(int twidth, int thigh, unit8* indata, unit8* outdata, int width, int 
 	}
 }
 
-unit32 WritePng(FILE* Pngname, unit32 Width, unit32 Height, unit8* PaletteData, unit8* data, unit32 bpp)
+void WritePng(FILE* Pngname, unit32 Width, unit32 Height, unit8* PaletteData, unit8* data, unit32 bpp)
 {
 	png_structp png_ptr;
 	png_infop info_ptr;
@@ -78,14 +78,14 @@ unit32 WritePng(FILE* Pngname, unit32 Width, unit32 Height, unit8* PaletteData, 
 	if (png_ptr == NULL)
 	{
 		printf("PNG信息创建失败!\n");
-		return -1;
+		exit(0);
 	}
 	info_ptr = png_create_info_struct(png_ptr);
 	if (info_ptr == NULL)
 	{
 		printf("info信息创建失败!\n");
 		png_destroy_write_struct(&png_ptr, (png_infopp)NULL);
-		return -1;
+		exit(0);
 	}
 	png_init_io(png_ptr, Pngname);
 	png_set_IHDR(png_ptr, info_ptr, Width, Height, bpp, PNG_COLOR_TYPE_PALETTE, PNG_INTERLACE_NONE, PNG_COMPRESSION_TYPE_DEFAULT, PNG_FILTER_TYPE_DEFAULT);
@@ -120,7 +120,7 @@ void bin2png(char* fname, char* idxname)
 	unit32 height = 0, width = 0, theight = 0, twidth = 0, bpp = 0, data_offset = 0, palette_offset = 0, count = 0, i = 0;
 	char dirPath[MAX_PATH];
 	char iniPath[MAX_PATH];
-	char buff[30];
+	char buff[30], keybuff[50];
 	GetCurrentDirectoryA(MAX_PATH, dirPath);
 	sprintf(iniPath, "%s\\%s", dirPath, "png.ini");
 	if (_access(iniPath, 4) == -1)
@@ -129,26 +129,53 @@ void bin2png(char* fname, char* idxname)
 		system("pause");
 		exit(0);
 	}
-	GetPrivateProfileStringA(idxname, "count", "1", buff, MAX_PATH, iniPath);
-	count = CheckString(buff);
+	count = GetPrivateProfileIntA(idxname, "count", 1, iniPath);
 	src = fopen(fname, "rb");
 	for (i = 1; i <= count; i++)
 	{
-		GetPrivateProfileStringA(idxname, "data_offset", "0", buff, MAX_PATH, iniPath);
-		data_offset = CheckString(buff);
-		GetPrivateProfileStringA(idxname, "palette_offset", "0", buff, MAX_PATH, iniPath);
-		palette_offset = CheckString(buff);
-		GetPrivateProfileStringA(idxname, "height", "0", buff, MAX_PATH, iniPath);
-		height = CheckString(buff);
-		GetPrivateProfileStringA(idxname, "width", "0", buff, MAX_PATH, iniPath);
-		width = CheckString(buff);
-		GetPrivateProfileStringA(idxname, "theight", "0", buff, MAX_PATH, iniPath);
-		theight = CheckString(buff);
-		GetPrivateProfileStringA(idxname, "twidth", "0", buff, MAX_PATH, iniPath);
-		twidth = CheckString(buff);
-		GetPrivateProfileStringA(idxname, "bpp", "0", buff, MAX_PATH, iniPath);
-		bpp = CheckString(buff);
-		sprintf(dstname, "%s.png", fname);
+		if (i == 1)
+		{
+			GetPrivateProfileStringA(idxname, "data_offset", "0", buff, MAX_PATH, iniPath);
+			data_offset = CheckString(buff);
+			GetPrivateProfileStringA(idxname, "palette_offset", "0", buff, MAX_PATH, iniPath);
+			palette_offset = CheckString(buff);
+			GetPrivateProfileStringA(idxname, "height", "0", buff, MAX_PATH, iniPath);
+			height = CheckString(buff);
+			GetPrivateProfileStringA(idxname, "width", "0", buff, MAX_PATH, iniPath);
+			width = CheckString(buff);
+			GetPrivateProfileStringA(idxname, "theight", "0", buff, MAX_PATH, iniPath);
+			theight = CheckString(buff);
+			GetPrivateProfileStringA(idxname, "twidth", "0", buff, MAX_PATH, iniPath);
+			twidth = CheckString(buff);
+			GetPrivateProfileStringA(idxname, "bpp", "0", buff, MAX_PATH, iniPath);
+			bpp = CheckString(buff);
+			sprintf(dstname, "%s.png", fname);
+		}
+		else
+		{
+			sprintf(keybuff, "data_offset%d", i - 1);
+			GetPrivateProfileStringA(idxname, keybuff, "0", buff, MAX_PATH, iniPath);
+			data_offset = CheckString(buff);
+			sprintf(keybuff, "palette_offset%d", i - 1);
+			GetPrivateProfileStringA(idxname, keybuff, "0", buff, MAX_PATH, iniPath);
+			palette_offset = CheckString(buff);
+			sprintf(keybuff, "height%d", i - 1);
+			GetPrivateProfileStringA(idxname, keybuff, "0", buff, MAX_PATH, iniPath);
+			height = CheckString(buff);
+			sprintf(keybuff, "width%d", i - 1);
+			GetPrivateProfileStringA(idxname, keybuff, "0", buff, MAX_PATH, iniPath);
+			width = CheckString(buff);
+			sprintf(keybuff, "theight%d", i - 1);
+			GetPrivateProfileStringA(idxname, keybuff, "0", buff, MAX_PATH, iniPath);
+			theight = CheckString(buff);
+			sprintf(keybuff, "twidth%d", i - 1);
+			GetPrivateProfileStringA(idxname, keybuff, "0", buff, MAX_PATH, iniPath);
+			twidth = CheckString(buff);
+			sprintf(keybuff, "bpp%d", i - 1);
+			GetPrivateProfileStringA(idxname, keybuff, "0", buff, MAX_PATH, iniPath);
+			bpp = CheckString(buff);
+			sprintf(dstname, "%s.%d.png", fname, i - 1);
+		}
 		fseek(src, data_offset, SEEK_SET);
 		if (bpp == 8)
 		{
@@ -168,7 +195,21 @@ void bin2png(char* fname, char* idxname)
 		}
 		else if (bpp == 4)
 		{
-
+			data = malloc(height * width / 2);
+			udata = malloc(height * width / 2);
+			fread(data, height * width / 2, 1, src);
+			for (unit32 j = 0; j < height * width / 2; j++)
+				data[j] = (data[j] & 0x0F) << 4 | (data[j] & 0xF0) >> 4;
+			palette = malloc(16 * 4);
+			fseek(src, palette_offset, SEEK_SET);
+			fread(palette, 16 * 4, 1, src);
+			tilec(twidth, theight, data, udata, width, height, bpp);
+			free(data);
+			dst = fopen(dstname, "wb");
+			WritePng(dst, width, height, palette, udata, bpp);
+			free(udata);
+			free(palette);
+			fclose(dst);
 		}
 		else
 		{

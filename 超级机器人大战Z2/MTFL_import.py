@@ -132,7 +132,7 @@ def main():
 								print(hex(str_off))
 								print(row)
 								print(inst)
-								#os.system("pause")
+								os.system("pause")
 							point_dic[str_off][1] = tmp.tell() - point_dic[str_off][0]
 							tmp.write(struct.pack('B',0))
 				tmp.seek(-1,os.SEEK_END)
