@@ -12,6 +12,8 @@
 #### [文本]
 EVENTBIN.BIN：剧情文本和胜利条件文本
 
+OP.BIN：OP中的人名，和作品名图片
+
 SRVC.BIN：战斗对话
 
 DATA000.BIN：开头文本
@@ -25,14 +27,12 @@ DATA020.BIN：人物文本
 DATA021.BIN：机体文本
 
 EBOOT.BIN：系统文本，存档文本，甚至有图片，没有配转码文件，所以存档文本直接存的UTF-8
-
-未找全
 #### [图片]
 大部分需要修图的都在Z2DATA.BIN、VEFF2DX.BIN、DATA013.BIN，大部分图片是GIM封包，有些是自制格式，简单的图片数据+调色板数据组合
 #### [压缩算法]
 LZ编码系列，有点意思，但是原版是有DP的，我自己没写带DP的，有空再完善吧
 #### [无限狱mod]
-需要解包mod的EVENTBIN.BIN，然后配合mod的EBOOT.BIN（命名为WBOOT.BIN）与基础汉化EBOOT.BIN（命名为BOOT.BIN）
+需要解包mod的EVENTBIN.BIN，然后配合mod的EBOOT.BIN（命名为WBOOT.BIN）与基础未导入文本的EBOOT.BIN（命名为BOOT.BIN，已附带）
 ## [New]
 ver 1.0
 
